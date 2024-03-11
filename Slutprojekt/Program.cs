@@ -5,8 +5,7 @@ using Raylib_cs;
 Raylib.InitWindow(800, 600, "Slutprojekt");
 Raylib.SetTargetFPS(200);
 
-  Vector2 boxPressedV = new Vector2();
-    Rectangle[,] boxes = new Rectangle[3, 5];
+string scene = "hair";
 
 
 /*--<][Main Loop][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
@@ -15,57 +14,58 @@ Raylib.SetTargetFPS(200);
 
 while (!Raylib.WindowShouldClose())
 {
+  
+    Raylib.BeginDrawing();
+    Raylib.ClearBackground(Color.White);
 
-  Vector2 mousePosV = new Vector2(Raylib.GetMouseX(), Raylib.GetMouseY());
-
-
-
-  BoxCreation(5,3);
-
-  Raylib.BeginDrawing();
-  Raylib.ClearBackground(Color.White);
-
-  for (int x = 0; x < boxes.GetLength(0); x++)
+  if (scene == "hair")
   {
-    for (int y = 0; y < boxes.GetLength(1); y++)
-    {
-      Raylib.DrawRectangleRec(boxes[x, y], Color.Brown);
-    }
-  }
+    
+    Vector2 mousePosV = new Vector2(Raylib.GetMouseX(), Raylib.GetMouseY());
+    Vector2 boxPressedV = new Vector2();
 
+    Boxmaker(3,5);
 
-  // Sparar vilken box du har klickat på
-  if (Raylib.IsMouseButtonPressed(MouseButton.Left))
-  {
-    for (int x = 0; x < boxes.GetLength(0); x++)
+    // Sparar vilken box du har klickat på
+    if (Raylib.IsMouseButtonPressed(MouseButton.Left))
     {
-      for (int y = 0; y < boxes.GetLength(1); y++)
+      for (int x = 0; x < resultat.X; x++)
       {
-        if (Raylib.CheckCollisionPointRec(mousePosV, boxes[x, y]))
+        for (int y = 0; y < boxes.GetLength(1); y++)
         {
-          boxPressedV.X = x;
-          boxPressedV.Y = y;
+          if (Raylib.CheckCollisionPointRec(mousePosV, boxes[x, y]))
+          {
+            boxPressedV.X = x;
+            boxPressedV.Y = y;
+          }
         }
       }
     }
   }
-
-
-
   Raylib.EndDrawing();
 }
 
-
-void BoxCreation(int a,int b)
+Vector2 Boxmaker(int a, int b)
 {
-  for (int x = 0; x < boxes.GetLength(0); x++)
-  {
-    for (int y = 0; y < boxes.GetLength(1); y++)
+      Rectangle[,] boxes = new Rectangle[a, b];
+
+    for (int x = 0; x < boxes.GetLength(0); x++)
     {
-      Rectangle rect = new(x * 120 + 50, y * 90 + 30, 100, 50);
-      boxes[x, y] = rect;
+      for (int y = 0; y < boxes.GetLength(1); y++)
+      {
+        Raylib.DrawRectangleRec(boxes[x, y], Color.Brown);
+      }
     }
 
-  }
+    for (int x = 0; x < boxes.GetLength(0); x++)
+    {
+      for (int y = 0; y < boxes.GetLength(1); y++)
+      {
+        Rectangle rect = new(x * 120 + 50, y * 90 + 30, 100, 50);
+        boxes[x, y] = rect;
+      }
 
+    }
+  Vector2 resultat = new Vector2(a,b);
+  return resultat;
 }
