@@ -53,19 +53,11 @@ while (!Raylib.WindowShouldClose())
 
           if (Raylib.CheckCollisionPointRec(mousePosV, boxes[x, y]))
           {
-            WhatDidIChoose(x,y);
+
           }
         }
       }
     }
   }
   Raylib.EndDrawing();
-}
-
-void WhatDidIChoose(int x, int y)
-{
-  if(x == 1)
-  {
-
-  }
 }

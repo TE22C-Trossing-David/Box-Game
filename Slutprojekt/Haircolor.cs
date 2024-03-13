@@ -5,8 +5,7 @@ class Haircolor
     int x;
     int y;
 
-    int[] ColorKeeper = new int[6];
+    string[] ColorKeeper = new string[6];
 
-    
 
 }
