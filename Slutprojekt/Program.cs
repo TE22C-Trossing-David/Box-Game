@@ -16,6 +16,10 @@ bool extremeHardcoreMode = false;
 int clickedBoxX = 0;
 int clickedBoxY = 0;
 
+
+Vector2 posPlayer = new Vector2()
+Vector2 sizePlayer = new Vector2(70, 70);
+
 /*--<][Main Loop][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -217,12 +221,11 @@ while (!Raylib.WindowShouldClose())
 
   if (scene == "extreme")
   {
+    Vector2 move = Movement();
+    
+    Raylib.DrawRectangleV(move, sizePlayer, Color.SkyBlue);
+
   }
-  // movement();
-
-
-
-
 
 
   //Saker som händer när man clickar--------------------------------------------------------------------------------------------------
@@ -242,11 +245,44 @@ while (!Raylib.WindowShouldClose())
 
   if (Raylib.IsKeyPressed(KeyboardKey.E) && extremeHardcoreMode)
   {
-    scene = "extrme";
+    scene = "extreme";
     extremeHardcoreMode = false;
     clicked = false;
   }
+
+
+static Vector2 Movement()
+  {
+
+    int intPosX = 0;
+    int intPosY = 0;
+
+    if (Raylib.IsKeyDown(KeyboardKey.Up))
+    {
+      intPosY += 10;
+    }
+
+    if (Raylib.IsKeyDown(KeyboardKey.Down))
+    {
+      intPosY -= 10;
+
+    }
+
+    if (Raylib.IsKeyDown(KeyboardKey.Left))
+    {
+      intPosX += 10;
+
+    }
+
+    if (Raylib.IsKeyDown(KeyboardKey.Right))
+    {
+      intPosX -= 10;
+    }
+    Vector2 returnVector = new Vector2(intPosX,intPosY);
+    return returnVector;
+  }
   Raylib.EndDrawing();
 }
+
 
 
