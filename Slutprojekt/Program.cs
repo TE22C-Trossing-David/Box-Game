@@ -7,43 +7,41 @@ Raylib.InitWindow(800, 600, "Slutprojekt");
 Raylib.SetTargetFPS(200);
 
 string scene = "start";
+
 bool clicked = false;
-
-bool ultraHardMode = false;
-bool extremeHardcoreMode = false;
-
+bool ClickatRätt = false;
 
 int clickedBoxX = 0;
 int clickedBoxY = 0;
 
-
-Vector2 posPlayer = new Vector2()
 Vector2 sizePlayer = new Vector2(70, 70);
 
+Vector2 posPlayer = new Vector2(20, 20);
+int posPlayerX = 0;
+int posPlayerY = 0;
+
+bool BeginExtreme = false;
+
+//-------------------------- TRUE För Testing-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+bool ultraHardMode = true;
+bool extremeHardcoreMode = true;
 /*--<][Main Loop][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-
 while (!Raylib.WindowShouldClose())
 {
-
   Raylib.BeginDrawing();
   Raylib.ClearBackground(Color.White);
-
   /*--<][Start Screen][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
   if (scene == "start")
   {
-    Raylib.DrawText("Pick a box", 310, 40, 30, Color.Black);
+    //Ritar upp Starttexten
+    StartText();
 
-    Raylib.DrawText("Use the mouse and click on a box to pick it", 80, 90, 30, Color.Black);
-
-
-    Raylib.DrawText("If the box turns green you chose correctly", 40, 150, 30, Color.Black);
-    Raylib.DrawText("If not then you chose wrong", 170, 185, 30, Color.Black);
-
-    Raylib.DrawText("Press R to Reset and ENTER to begin", 100, 250, 30, Color.Black);
+    //Startar Spelet
     if (Raylib.IsKeyPressed(KeyboardKey.Enter))
     {
       scene = "game";
@@ -52,10 +50,11 @@ while (!Raylib.WindowShouldClose())
   /*--<][Base game][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-
   if (scene == "game")
   {
-
+    
+    ClickatRätt = false;
+    //Sparar muspositionen som en vector2
     Vector2 mousePosV = new Vector2(Raylib.GetMouseX(), Raylib.GetMouseY());
 
     //Skapar 2d Array eftersom att jag alltid vill ha samma storlek
@@ -69,7 +68,6 @@ while (!Raylib.WindowShouldClose())
         Rectangle rect = new(x * 120 + 50, y * 90 + 30, 100, 50);
         boxes[x, y] = rect;
       }
-
     }
 
     //Ritar Boxes
@@ -80,7 +78,6 @@ while (!Raylib.WindowShouldClose())
         for (int y = 0; y < boxes.GetLength(1); y++)
         {
           Raylib.DrawRectangleRec(boxes[x, y], Color.Brown);
-
         }
       }
     }
@@ -96,7 +93,6 @@ while (!Raylib.WindowShouldClose())
           {
             clickedBoxX = x;
             clickedBoxY = y;
-
             clicked = true;
           }
         }
@@ -110,39 +106,29 @@ while (!Raylib.WindowShouldClose())
       if (clickedBoxX == 2 && clickedBoxY == 1)
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Green);
-
-        Raylib.DrawText("Congrats! You chose correctly!", 170, 250, 30, Color.Green);
-        Raylib.DrawText("You have unlocked", 260, 370, 30, Color.Black);
-        Raylib.DrawText("ULTRA HARD MODE!!!", 200, 410, 40, Color.Purple);
-
-        Raylib.DrawText("Press H to start ULTRA HARD MODE", 120, 450, 30, Color.Black);
-
+        UltraUnlock();
+        ClickatRätt = true;
         ultraHardMode = true;
       }
       else
       //Om man clickat fel
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Red);
-
-        Raylib.DrawText("Wrong.", 170, 250, 30, Color.Red);
-        Raylib.DrawText("Press R to retry", 100, 290, 30, Color.Red);
+        FelBox();
       }
     }
-
   }
-
   /*--<][ULTRA HARD MODE][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-
   if (scene == "ultra")
   {
-
+    ClickatRätt = false;
+    //Sparar muspositionen som en vector2
     Vector2 mousePosV = new Vector2(Raylib.GetMouseX(), Raylib.GetMouseY());
 
     //Skapar 2d Array eftersom att jag alltid vill ha den lika stor
     Rectangle[,] boxes = new Rectangle[6, 6];
-
 
     //Ritar Boxes
     for (int x = 0; x < boxes.GetLength(0); x++)
@@ -152,7 +138,6 @@ while (!Raylib.WindowShouldClose())
         Rectangle rect = new(x * 120 + 50, y * 90 + 30, 100, 50);
         boxes[x, y] = rect;
       }
-
     }
 
     //Spawnar Boxes i en 2d Array
@@ -163,7 +148,6 @@ while (!Raylib.WindowShouldClose())
         for (int y = 0; y < boxes.GetLength(1); y++)
         {
           Raylib.DrawRectangleRec(boxes[x, y], Color.Brown);
-
         }
       }
     }
@@ -179,7 +163,6 @@ while (!Raylib.WindowShouldClose())
           {
             clickedBoxX = x;
             clickedBoxY = y;
-
             clicked = true;
           }
         }
@@ -193,47 +176,46 @@ while (!Raylib.WindowShouldClose())
       if (clickedBoxX == 4 && clickedBoxY == 2)
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Green);
-
-        Raylib.DrawText("Congrats! You chose correctly!", 170, 260, 30, Color.Green);
-        Raylib.DrawText("You can leave now", 260, 360, 30, Color.Black);
-        Raylib.DrawText("Unless you want to try the new", 160, 410, 30, Color.Black);
-        Raylib.DrawText("EXTREME HARDCORE MODE!!!", 120, 470, 40, Color.Maroon);
-
-        Raylib.DrawText("Press E to start EXTREME HARDCORE MODE", 70, 530, 30, Color.Black);
-
-
+        ExtremeUnlock();
+        ClickatRätt = true;
         extremeHardcoreMode = true;
       }
       else
       //Om man clickat fel
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Red);
-
-        Raylib.DrawText("Wrong.", 170, 250, 30, Color.Red);
-        Raylib.DrawText("Press R to retry", 100, 290, 30, Color.Red);
+        FelBox();
       }
     }
-
   }
-
   /*--<][EXTREME HARDCORE MODE][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
   if (scene == "extreme")
   {
-    Vector2 move = Movement();
-    
-    Raylib.DrawRectangleV(move, sizePlayer, Color.SkyBlue);
-
+    if (!BeginExtreme)
+    {
+      ExplainExtreme();
+      if (Raylib.IsKeyPressed(KeyboardKey.Enter))
+      {
+        BeginExtreme = true;
+      }
+    }
+    else
+    {
+      Raylib.ClearBackground(Color.SkyBlue);
+      Vector2 move = Movement();
+      posPlayerX = (int)move.X + posPlayerX;
+      posPlayerY = (int)move.Y + posPlayerY;
+      Vector2 vPosPlayer = new Vector2(posPlayerX, posPlayerY);
+      Raylib.DrawRectangleV(vPosPlayer, sizePlayer, Color.Red);
+    }
   }
-
-
   //Saker som händer när man clickar--------------------------------------------------------------------------------------------------
 
-  if (Raylib.IsKeyPressed(KeyboardKey.R))
+  if (Raylib.IsKeyPressed(KeyboardKey.R) && !ClickatRätt)
   {
     clicked = false;
-
   }
 
   if (Raylib.IsKeyPressed(KeyboardKey.H) && ultraHardMode)
@@ -251,38 +233,77 @@ while (!Raylib.WindowShouldClose())
   }
 
 
-static Vector2 Movement()
+  static Vector2 Movement()
   {
-
     int intPosX = 0;
     int intPosY = 0;
 
-    if (Raylib.IsKeyDown(KeyboardKey.Up))
+    int playerSpeed = 2;
+
+    if (Raylib.IsKeyDown(KeyboardKey.Up) || Raylib.IsKeyDown(KeyboardKey.W))
     {
-      intPosY += 10;
+      intPosY -= playerSpeed;
     }
 
-    if (Raylib.IsKeyDown(KeyboardKey.Down))
+    if (Raylib.IsKeyDown(KeyboardKey.Down) || Raylib.IsKeyDown(KeyboardKey.S))
     {
-      intPosY -= 10;
-
+      intPosY += playerSpeed;
     }
 
-    if (Raylib.IsKeyDown(KeyboardKey.Left))
+    if (Raylib.IsKeyDown(KeyboardKey.Left) || Raylib.IsKeyDown(KeyboardKey.A))
     {
-      intPosX += 10;
-
+      intPosX -= playerSpeed;
     }
 
-    if (Raylib.IsKeyDown(KeyboardKey.Right))
+    if (Raylib.IsKeyDown(KeyboardKey.Right) || Raylib.IsKeyDown(KeyboardKey.D))
     {
-      intPosX -= 10;
+      intPosX += playerSpeed;
     }
-    Vector2 returnVector = new Vector2(intPosX,intPosY);
+
+    Vector2 returnVector = new Vector2(intPosX, intPosY);
     return returnVector;
   }
   Raylib.EndDrawing();
 }
 
+static void StartText()
+{
+  Raylib.DrawText("Pick a box", 310, 100, 30, Color.Black);
+  Raylib.DrawText("Use the mouse and click on a box to pick it", 80, 190, 30, Color.Black);
+  Raylib.DrawText("If the box turns green you chose correctly", 40, 280, 30, Color.Green);
+  Raylib.DrawText("If not then you chose wrong", 170, 320, 30, Color.Red);
+  Raylib.DrawText("Press R to Reset and ENTER to begin", 100, 400, 30, Color.Black);
+}
 
+static void FelBox()
+{
+  Raylib.DrawText("Wrong.", 170, 250, 30, Color.Red);
+  Raylib.DrawText("Press R to retry", 100, 290, 30, Color.Red);
+}
 
+static void UltraUnlock()
+{
+  Raylib.DrawText("Congrats! You chose correctly!", 170, 250, 30, Color.Green);
+  Raylib.DrawText("You have unlocked", 260, 370, 30, Color.Black);
+  Raylib.DrawText("ULTRA HARD MODE!!!", 200, 410, 40, Color.Purple);
+  Raylib.DrawText("Press H to start ULTRA HARD MODE", 120, 450, 30, Color.Black);
+}
+
+static void ExtremeUnlock()
+{
+  Raylib.DrawText("Congrats! You chose correctly!", 170, 260, 30, Color.Green);
+  Raylib.DrawText("You can leave now", 260, 360, 30, Color.Black);
+  Raylib.DrawText("Unless you want to try the new", 160, 410, 30, Color.Black);
+  Raylib.DrawText("EXTREME HARDCORE MODE!!!", 120, 470, 40, Color.Maroon);
+  Raylib.DrawText("Press E to start EXTREME HARDCORE MODE", 70, 530, 30, Color.Black);
+}
+
+static void ExplainExtreme()
+{
+  Raylib.DrawText("You press E and get launched into the sky!!!", 30, 100, 30, Color.SkyBlue);
+  Raylib.DrawText("Use WASD or the arrow keys to move", 80, 190, 30, Color.Black);
+  Raylib.DrawText("You can freely move around in the sky", 60, 280, 30, Color.Black);
+  Raylib.DrawText("Feel free to move around for as long as you like", 20, 320, 30, Color.Black);
+  Raylib.DrawText("Press ENTER to start the game", 100, 400, 30, Color.Black);
+  Raylib.DrawText("Press ESC to hit the groumd", 100, 440, 30, Color.Black);
+}
