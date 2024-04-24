@@ -1,4 +1,5 @@
 ﻿
+using System.IO.Pipes;
 using System.Linq.Expressions;
 using System.Numerics;
 using Raylib_cs;
@@ -9,7 +10,7 @@ Raylib.SetTargetFPS(200);
 string scene = "start";
 
 bool clicked = false;
-bool ClickatRätt = false;
+bool clickedRight = false;
 
 int clickedBoxX = 0;
 int clickedBoxY = 0;
@@ -20,12 +21,11 @@ Vector2 posPlayer = new Vector2(20, 20);
 int posPlayerX = 0;
 int posPlayerY = 0;
 
-bool BeginExtreme = false;
+bool ultraHardMode = false;
+bool extremeHardcoreMode = false;
 
-//-------------------------- TRUE För Testing-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bool beginExtreme = false;
 
-bool ultraHardMode = true;
-bool extremeHardcoreMode = true;
 /*--<][Main Loop][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -33,6 +33,7 @@ while (!Raylib.WindowShouldClose())
 {
   Raylib.BeginDrawing();
   Raylib.ClearBackground(Color.White);
+
   /*--<][Start Screen][>--------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -52,15 +53,15 @@ while (!Raylib.WindowShouldClose())
 
   if (scene == "game")
   {
-    
-    ClickatRätt = false;
+    clickedRight = false;
+
     //Sparar muspositionen som en vector2
     Vector2 mousePosV = new Vector2(Raylib.GetMouseX(), Raylib.GetMouseY());
 
     //Skapar 2d Array eftersom att jag alltid vill ha samma storlek
     Rectangle[,] boxes = new Rectangle[3, 2];
 
-    //Lägger till Boxes i en 2d Array
+    //Lägger till boxes i en 2d Array
     for (int x = 0; x < boxes.GetLength(0); x++)
     {
       for (int y = 0; y < boxes.GetLength(1); y++)
@@ -70,7 +71,7 @@ while (!Raylib.WindowShouldClose())
       }
     }
 
-    //Ritar Boxes
+    //Ritar boxes
     if (!clicked)
     {
       for (int x = 0; x < boxes.GetLength(0); x++)
@@ -107,14 +108,14 @@ while (!Raylib.WindowShouldClose())
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Green);
         UltraUnlock();
-        ClickatRätt = true;
+        clickedRight = true;
         ultraHardMode = true;
       }
       else
-      //Om man clickat fel
+      //Om man clickade fel
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Red);
-        FelBox();
+        WrongBox();
       }
     }
   }
@@ -123,7 +124,7 @@ while (!Raylib.WindowShouldClose())
 
   if (scene == "ultra")
   {
-    ClickatRätt = false;
+    clickedRight = false;
     //Sparar muspositionen som en vector2
     Vector2 mousePosV = new Vector2(Raylib.GetMouseX(), Raylib.GetMouseY());
 
@@ -169,22 +170,22 @@ while (!Raylib.WindowShouldClose())
       }
     }
 
-    //Efter man clickat
+    //Efter man klickat
     if (clicked)
     {
-      //Om man clickade rätt
+      //Om man klickade rätt
       if (clickedBoxX == 4 && clickedBoxY == 2)
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Green);
         ExtremeUnlock();
-        ClickatRätt = true;
+        clickedRight = true;
         extremeHardcoreMode = true;
       }
       else
-      //Om man clickat fel
+      //Om man klickade fel
       {
         Raylib.DrawRectangleRec(boxes[clickedBoxX, clickedBoxY], Color.Red);
-        FelBox();
+        WrongBox();
       }
     }
   }
@@ -193,16 +194,18 @@ while (!Raylib.WindowShouldClose())
 
   if (scene == "extreme")
   {
-    if (!BeginExtreme)
+    if (!beginExtreme)
     {
+      //info screen
       ExplainExtreme();
       if (Raylib.IsKeyPressed(KeyboardKey.Enter))
       {
-        BeginExtreme = true;
+        beginExtreme = true;
       }
     }
     else
     {
+      //Movement
       Raylib.ClearBackground(Color.SkyBlue);
       Vector2 move = Movement();
       posPlayerX = (int)move.X + posPlayerX;
@@ -211,9 +214,9 @@ while (!Raylib.WindowShouldClose())
       Raylib.DrawRectangleV(vPosPlayer, sizePlayer, Color.Red);
     }
   }
-  //Saker som händer när man clickar--------------------------------------------------------------------------------------------------
+  //Saker som händer när man klickar--------------------------------------------------------------------------------------------------
 
-  if (Raylib.IsKeyPressed(KeyboardKey.R) && !ClickatRätt)
+  if (Raylib.IsKeyPressed(KeyboardKey.R) && !clickedRight)
   {
     clicked = false;
   }
@@ -232,7 +235,9 @@ while (!Raylib.WindowShouldClose())
     clicked = false;
   }
 
-
+//Medtoder-------------------------------------------------------------------------------------------------------------------------------
+  
+  
   static Vector2 Movement()
   {
     int intPosX = 0;
@@ -275,7 +280,7 @@ static void StartText()
   Raylib.DrawText("Press R to Reset and ENTER to begin", 100, 400, 30, Color.Black);
 }
 
-static void FelBox()
+static void WrongBox()
 {
   Raylib.DrawText("Wrong.", 170, 250, 30, Color.Red);
   Raylib.DrawText("Press R to retry", 100, 290, 30, Color.Red);
@@ -300,7 +305,7 @@ static void ExtremeUnlock()
 
 static void ExplainExtreme()
 {
-  Raylib.DrawText("You press E and get launched into the sky!!!", 30, 100, 30, Color.SkyBlue);
+  Raylib.DrawText("You get launched into the sky!!!", 120, 100, 30, Color.SkyBlue);
   Raylib.DrawText("Use WASD or the arrow keys to move", 80, 190, 30, Color.Black);
   Raylib.DrawText("You can freely move around in the sky", 60, 280, 30, Color.Black);
   Raylib.DrawText("Feel free to move around for as long as you like", 20, 320, 30, Color.Black);
